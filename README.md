@@ -8,3 +8,46 @@ This framework provides two advantages: (1) precise control over the scale and s
 
 ## Future Work / Final Remarks
 Wavelet perturbations offer a principled tool for probing the robustness and interpretability of LLMs. Future work will explore their role in adversarial attack generation, sensitivity benchmarking, and developing more resilient NLP systems.
+
+## Workflow
+### Embedding + Wavelet Perturbation
+
+  - Embed each sentence.
+  
+  - Apply DWT → decompose into low- and high-frequency components.
+  
+  - Perturb embeddings: zero out low-frequency or high-frequency coefficients (and optionally other methods).
+  
+  - Reconstruct embeddings (inverse wavelet transform).
+
+### Next-token Prediction (Autoregressive)
+
+  - Feed perturbed embeddings into the model.
+  
+  - For each sentence, generate top-k logits for the next n tokens (e.g., next 5 tokens).
+
+### Metrics per sentence
+  
+  - For each perturbation and each sentence, calculate:
+  
+  - Mean confidence of top-k tokens.
+  
+  - KL divergence between perturbed vs. original top-k distributions.
+  
+  - Top-k flips (how many predicted tokens changed rank).
+
+### Aggregate metrics across dataset
+
+  - Average each metric over all sentences.
+  
+  - Optional: compute variance to show consistency of effect.
+
+### Visualization & Analysis
+
+  - Bar chart or heatmap of mean confidence shifts for low vs high-frequency perturbations.
+  
+  - Top-k flips as a separate plot.
+
+KL divergence plotted per perturbation type.
+
+Highlight patterns: e.g., low-frequency removal decreases confidence, high-frequency increases it slightly, etc.
